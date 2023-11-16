@@ -5,12 +5,12 @@ clip() {
 	local sleep_argv0="password store sleep for user $(id -u)"
 	pkill -f "^$sleep_argv0" 2>/dev/null && sleep 0.5
 	local before="$(pbpaste | $BASE64)"
-	echo -n "$1" | pbcopy
+	echo -n "$1" | concealed-pbcopy
 	(
 		(exec -a "$sleep_argv0" "${SLEEP}" "$CLIP_TIME")
 		local now="$(pbpaste | $BASE64)"
 		[[ $now != $(echo -n "$1" | $BASE64) ]] && before="$now"
-		echo "$before" | $BASE64 -d | pbcopy
+		echo "$before" | $BASE64 -d | concealed-pbcopy
 	) >/dev/null 2>&1 & disown
 	echo "Copied $2 to clipboard. Will clear in $CLIP_TIME seconds."
 }
